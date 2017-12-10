@@ -1,6 +1,5 @@
 #include <Arduino.h>
 
-//IO配置
 #define LEDARRAY_D 2
 #define LEDARRAY_C 3
 #define LEDARRAY_B 4
@@ -11,12 +10,11 @@
 #define LEDARRAY_LAT 9
 
 #define led 13
-
 #define Num_Word 1
 
 void Clear_Display();
 void Calc_Shift();
-void Display(unsigned char dat[][32]);
+void Display(unsigned char dat[][16]);
 void Send(unsigned char dat);
 void Scan_Line( unsigned char m);
 
@@ -30,15 +28,25 @@ unsigned char Shift_Count = 0;
 unsigned char Display_Word_Count = 0;
 
 #define Num_Of_Word 2
-const unsigned char Word[Num_Of_Word][32] =
+
+const unsigned char Word[Num_Of_Word][16] =
 {
-
-0xFE,0xFE,0xFE,0xFE,0xF6,0xF2,0xE6,0xEE,0xDE,0xBE,0x7E,0xFE,0xFE,0xFE,0xFA,0xFD,
-0xFF,0xFF,0xFF,0xFF,0xBF,0xDF,0xEF,0xE7,0xF3,0xF9,0xFB,0xFF,0xFF,0xFF,0xFF,0xFF,
-
-0xFF,0x86,0xF6,0xF6,0x86,0xBF,0xBC,0xBD,0x85,0xF5,0xF4,0xF7,0xF7,0xF7,0xD7,0xEC,
-0xFF,0x07,0xF7,0xF7,0x07,0xBF,0x03,0xBB,0xBB,0xBB,0x03,0xBF,0xB7,0xBB,0x81,0x3B,
-
+	0x1F, 0xE0, // 0001111111100000
+	0x30, 0x30, // 0011000000110000
+	0x20, 0x1C, // 0010000000011100
+	0x60, 0xC6, // 0110000011000110
+	0x46, 0x63, // 0100011001100011
+	0x86, 0x21, // 1000011000100001
+	0x80, 0x31, // 1000000000110001
+	0x80, 0x11, // 1000000000010001
+	0x83, 0x13, // 1000001100010011
+	0xC3, 0x12, // 1100001100010010
+	0x60, 0x32, // 0110000000110010
+	0x20, 0x66, // 0010000001100110
+	0x30, 0x04, // 0011000000000100
+	0x18, 0x04, // 0001100000000100
+	0x0C, 0x0C, // 0000110000001100
+	0x03, 0xF8, // 0000001111111000
 };
 
 void setup()
@@ -55,6 +63,7 @@ void setup()
 	Clear_Display();
 }
 
+/*
 void loop()
 {
 	unsigned int i;
@@ -71,6 +80,12 @@ void loop()
 	}
 
 }
+*/
+
+void loop() {
+	Display(Word);
+}
+
 
 //************************************************************
 //************************************************************
@@ -135,19 +150,19 @@ void Calc_Shift()
 }
 //************************************************************
 //*************************************************************
-void Display(unsigned char dat[][32])
+void Display(unsigned char dat[][16])
 {
 	unsigned char i;
 
-	for( i = 0 ; i < 16 ; i++ )
+	for( i = 0 ; i < 32 ; i+=2 )
 	{
 		digitalWrite(LEDARRAY_G, HIGH);
 
 		Display_Buffer[0] = dat[0][i];
-		Display_Buffer[1] = dat[0][i+16];
+		Display_Buffer[1] = dat[0][i+1];
 
-		Send(Display_Buffer[1]);
-		Send(Display_Buffer[0]);
+		Send(~Display_Buffer[1]);
+		Send(~Display_Buffer[0]);
 
 		digitalWrite(LEDARRAY_LAT, HIGH);
 		delayMicroseconds(1);
@@ -155,11 +170,11 @@ void Display(unsigned char dat[][32])
 		digitalWrite(LEDARRAY_LAT, LOW);
 		delayMicroseconds(1);
 
-		Scan_Line(i);
+		Scan_Line(i/2);
 
 		digitalWrite(LEDARRAY_G, LOW);
 
-		delayMicroseconds(300);;
+		delayMicroseconds(300);
 	}
 }
 
@@ -170,52 +185,100 @@ void Scan_Line( unsigned char m)
 	switch(m)
 	{
 		case 0:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 1:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 2:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 3:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 4:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 5:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 6:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 7:
-			digitalWrite(LEDARRAY_D, LOW);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, LOW);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 8:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 9:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 10:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 11:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, LOW);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, LOW);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 12:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 13:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, LOW);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, LOW);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		case 14:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, LOW);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, LOW);
 			break;
 		case 15:
-			digitalWrite(LEDARRAY_D, HIGH);digitalWrite(LEDARRAY_C, HIGH);digitalWrite(LEDARRAY_B, HIGH);digitalWrite(LEDARRAY_A, HIGH);
+			digitalWrite(LEDARRAY_D, HIGH);
+			digitalWrite(LEDARRAY_C, HIGH);
+			digitalWrite(LEDARRAY_B, HIGH);
+			digitalWrite(LEDARRAY_A, HIGH);
 			break;
 		default : break;
 	}
@@ -241,7 +304,6 @@ void Send( unsigned char dat)
 		{
 			digitalWrite(LEDARRAY_DI, LOW);
 		}
-
 
 		digitalWrite(LEDARRAY_CLK, HIGH);
 			delayMicroseconds(1);;

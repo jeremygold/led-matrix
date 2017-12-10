@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
 import cv2
+import sys
+
+if sys.argc != 2:
+    print( "USAGE: " + sys.argv[0] + " <filename>" )
+    sys.exit(1)
 
 img = cv2.imread('/convert/smiley.png')
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)

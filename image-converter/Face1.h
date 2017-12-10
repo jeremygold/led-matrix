@@ -1,7 +1,7 @@
 #ifndef __FACE1_H__
 #define __FACE1_H__
 
-const unsigned char Face1[Num_Of_Word][32] = {
+const unsigned char Face1[Num_Of_Word][16] = {
     0x00, 0x00, // 0000000000000000
     0x3F, 0xF8, // 0011111111111000
     0x64, 0x0F, // 0110010000001111

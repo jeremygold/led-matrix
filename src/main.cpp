@@ -94,11 +94,11 @@ void Calc_Shift()
 
 		if(Shift_Count%16 < 8 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][i] & temp;
+			Shift_Bit = Face1[Display_Word_Count][i]&temp;
 		}
 		else if(Shift_Count%16 < 16 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][16+i] & temp;
+			Shift_Bit = Face1[Display_Word_Count][16+i]&temp;
 		}
 		else
 		{

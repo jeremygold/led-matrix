@@ -24,7 +24,7 @@ macro = "__" + varname.upper() + "_H__"
 print("#ifndef " + macro)
 print("#define " + macro)
 print("")
-print('const unsigned char ' + varname + '[Num_Of_Word][32] = {')
+print('const unsigned char ' + varname + '[Num_Of_Word][16] = {')
 
 # Convert to HSV so we can decide on output values based on V
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)

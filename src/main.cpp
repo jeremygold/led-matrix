@@ -2,6 +2,9 @@
 #define Num_Of_Word 2
 
 #include "../image-converter/Face1.h"
+#include "../image-converter/Face2.h"
+#include "../image-converter/Face3.h"
+#include "../image-converter/Face4.h"
 
 #define LEDARRAY_D 2
 #define LEDARRAY_C 3
@@ -58,8 +61,17 @@ void loop()
 }
 */
 
+void displayAndHold(unsigned char image[][16], unsigned int count) {
+	for (int i = 0; i < count; i++){
+		Display(image);
+	}
+}
+
 void loop() {
-	Display(Face1);
+	displayAndHold(Face1,50);
+	displayAndHold(Face2,50);
+	displayAndHold(Face3,50);
+	displayAndHold(Face4,50);
 }
 
 //************************************************************
@@ -76,6 +88,7 @@ void Clear_Display()
 }
 
 //************************************************************
+/*
 void Calc_Shift()
 {
 	unsigned char i;
@@ -94,11 +107,11 @@ void Calc_Shift()
 
 		if(Shift_Count%16 < 8 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Face1[Display_Word_Count][i]&temp;
+			Shift_Bit = Word[Display_Word_Count][i]&temp;
 		}
 		else if(Shift_Count%16 < 16 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Face1[Display_Word_Count][16+i]&temp;
+			Shift_Bit = Word[Display_Word_Count][16+i]&temp;
 		}
 		else
 		{
@@ -123,6 +136,7 @@ void Calc_Shift()
 		temp = 0x80;
 	}
 }
+*/
 
 //*************************************************************
 void Display(unsigned char dat[][16])

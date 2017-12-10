@@ -1,4 +1,10 @@
 #include <Arduino.h>
+#define Num_Of_Word 2
+
+#include "../image-converter/Face1.h"
+#include "../image-converter/Face2.h"
+#include "../image-converter/Face3.h"
+#include "../image-converter/Face4.h"
 
 #define LEDARRAY_D 2
 #define LEDARRAY_C 3
@@ -22,28 +28,6 @@ unsigned char Display_Swap_Buffer[Num_Word][32]={0};
 unsigned char temp = 0x80;
 unsigned char Shift_Count = 0;
 unsigned char Display_Word_Count = 0;
-
-#define BYTES_PER_WORD 2
-
-const unsigned char Word[BYTES_PER_WORD][16] =
-{
-	0x1F, 0xE0, // 0001111111100000
-	0x30, 0x30, // 0011000000110000
-	0x20, 0x1C, // 0010000000011100
-	0x60, 0xC6, // 0110000011000110
-	0x46, 0x63, // 0100011001100011
-	0x86, 0x21, // 1000011000100001
-	0x80, 0x31, // 1000000000110001
-	0x80, 0x11, // 1000000000010001
-	0x83, 0x13, // 1000001100010011
-	0xC3, 0x12, // 1100001100010010
-	0x60, 0x32, // 0110000000110010
-	0x20, 0x66, // 0010000001100110
-	0x30, 0x04, // 0011000000000100
-	0x18, 0x04, // 0001100000000100
-	0x0C, 0x0C, // 0000110000001100
-	0x03, 0xF8  // 0000001111111000
-};
 
 void setup()
 {
@@ -77,8 +61,17 @@ void loop()
 }
 */
 
+void displayAndHold(unsigned char image[][16], unsigned int count) {
+	for (int i = 0; i < count; i++){
+		Display(image);
+	}
+}
+
 void loop() {
-	Display(Word);
+	displayAndHold(Face1,50);
+	displayAndHold(Face2,50);
+	displayAndHold(Face3,50);
+	displayAndHold(Face4,50);
 }
 
 //************************************************************
@@ -95,6 +88,7 @@ void Clear_Display()
 }
 
 //************************************************************
+/*
 void Calc_Shift()
 {
 	unsigned char i;
@@ -113,11 +107,11 @@ void Calc_Shift()
 
 		if(Shift_Count%16 < 8 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][i] & temp;
+			Shift_Bit = Word[Display_Word_Count][i]&temp;
 		}
 		else if(Shift_Count%16 < 16 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][16+i] & temp;
+			Shift_Bit = Word[Display_Word_Count][16+i]&temp;
 		}
 		else
 		{
@@ -142,6 +136,7 @@ void Calc_Shift()
 		temp = 0x80;
 	}
 }
+*/
 
 //*************************************************************
 void Display(unsigned char dat[][16])

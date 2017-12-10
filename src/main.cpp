@@ -1,10 +1,10 @@
 #include <Arduino.h>
 #define Num_Of_Word 2
 
-#include "../image-converter/Face1.h"
-#include "../image-converter/Face2.h"
-#include "../image-converter/Face3.h"
-#include "../image-converter/Face4.h"
+#include "Pacman1.h"
+#include "Pacman2.h"
+#include "Pacman3.h"
+#include "Pacman4.h"
 
 #define LEDARRAY_D 2
 #define LEDARRAY_C 3
@@ -19,7 +19,7 @@
 
 void Clear_Display();
 void Calc_Shift();
-void Display(unsigned char dat[][16]);
+void Display(const unsigned char dat[][16]);
 void Send(unsigned char dat);
 void Scan_Line( unsigned char m);
 
@@ -43,35 +43,17 @@ void setup()
 	Clear_Display();
 }
 
-/*
-void loop()
-{
-	unsigned int i;
-	for(i = 0 ; i < 30; i ++)
-	{
-		Display(Display_Swap_Buffer);
-	}
-	Display_Word_Count = Shift_Count/16;
-	Calc_Shift();
-	Shift_Count++;
-	if(Shift_Count == (BYTES_PER_WORD+1)*16 )
-	{
-		Shift_Count = 0;
-	}
-}
-*/
-
-void displayAndHold(unsigned char image[][16], unsigned int count) {
-	for (int i = 0; i < count; i++){
+void displayAndHold(const unsigned char image[][16], unsigned int count) {
+	for (unsigned int i = 0; i < count; i++){
 		Display(image);
 	}
 }
 
 void loop() {
-	displayAndHold(Face1,50);
-	displayAndHold(Face2,50);
-	displayAndHold(Face3,50);
-	displayAndHold(Face4,50);
+	displayAndHold(Pacman1,50);
+	displayAndHold(Pacman2,50);
+	displayAndHold(Pacman3,50);
+	displayAndHold(Pacman4,50);
 }
 
 //************************************************************
@@ -87,59 +69,8 @@ void Clear_Display()
 	}
 }
 
-//************************************************************
-/*
-void Calc_Shift()
-{
-	unsigned char i;
-	bool Shift_Bit = 0;
-
-	for(i = 0;i < 16;i++)
-	{
-		if((Display_Swap_Buffer[0][16+i]&0x80) == 0)
-		{
-			Display_Swap_Buffer[0][i] = (Display_Swap_Buffer[0][i] << 1)&0xfe;
-		}
-		else
-		{
-			Display_Swap_Buffer[0][i] = (Display_Swap_Buffer[0][i] << 1)|0x01;
-		}
-
-		if(Shift_Count%16 < 8 && Display_Word_Count < BYTES_PER_WORD)
-		{
-			Shift_Bit = Word[Display_Word_Count][i]&temp;
-		}
-		else if(Shift_Count%16 < 16 && Display_Word_Count < BYTES_PER_WORD)
-		{
-			Shift_Bit = Word[Display_Word_Count][16+i]&temp;
-		}
-		else
-		{
-			Shift_Bit = 1;
-		}
-
-		if( Shift_Bit == 0)
-		{
-			Display_Swap_Buffer[0][16+i] = (Display_Swap_Buffer[0][16+i] << 1)&0xfe;
-		}
-		else
-		{
-			Shift_Bit =	1;
-			Display_Swap_Buffer[0][16+i] = (Display_Swap_Buffer[0][16+i] << 1)|0x01;
-		}
-
-	}
-
-	temp = (temp>>1)&0x7f;
-	if(temp == 0x00)
-	{
-		temp = 0x80;
-	}
-}
-*/
-
 //*************************************************************
-void Display(unsigned char dat[][16])
+void Display(const unsigned char dat[][16])
 {
 	unsigned char Display_Buffer[2];
 	unsigned char i;

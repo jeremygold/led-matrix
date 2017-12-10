@@ -50,10 +50,10 @@ void displayAndHold(const unsigned char image[][16], unsigned int count) {
 }
 
 void loop() {
-	displayAndHold(Pacman1,50);
-	displayAndHold(Pacman2,50);
-	displayAndHold(Pacman3,50);
-	displayAndHold(Pacman4,50);
+	displayAndHold(Pacman1,10);
+	displayAndHold(Pacman2,10);
+	displayAndHold(Pacman3,10);
+	displayAndHold(Pacman4,10);
 }
 
 //************************************************************

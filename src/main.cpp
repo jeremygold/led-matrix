@@ -19,17 +19,13 @@ void Scan_Line( unsigned char m);
 
 unsigned char Display_Swap_Buffer[Num_Word][32]={0};
 
-bool Shift_Bit = 0;
-bool Flag_Shift = 0;
-
-unsigned char Timer0_Count = 0;
 unsigned char temp = 0x80;
 unsigned char Shift_Count = 0;
 unsigned char Display_Word_Count = 0;
 
-#define Num_Of_Word 2
+#define BYTES_PER_WORD 2
 
-const unsigned char Word[Num_Of_Word][16] =
+const unsigned char Word[BYTES_PER_WORD][16] =
 {
 	0x1F, 0xE0, // 0001111111100000
 	0x30, 0x30, // 0011000000110000
@@ -74,11 +70,10 @@ void loop()
 	Display_Word_Count = Shift_Count/16;
 	Calc_Shift();
 	Shift_Count++;
-	if(Shift_Count == (Num_Of_Word+1)*16 )
+	if(Shift_Count == (BYTES_PER_WORD+1)*16 )
 	{
 		Shift_Count = 0;
 	}
-
 }
 */
 
@@ -103,6 +98,7 @@ void Clear_Display()
 void Calc_Shift()
 {
 	unsigned char i;
+	bool Shift_Bit = 0;
 
 	for(i = 0;i < 16;i++)
 	{
@@ -115,13 +111,13 @@ void Calc_Shift()
 			Display_Swap_Buffer[0][i] = (Display_Swap_Buffer[0][i] << 1)|0x01;
 		}
 
-		if(Shift_Count%16 < 8 && Display_Word_Count < Num_Of_Word)
+		if(Shift_Count%16 < 8 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][i]&temp;
+			Shift_Bit = Word[Display_Word_Count][i] & temp;
 		}
-		else if(Shift_Count%16 < 16 && Display_Word_Count < Num_Of_Word)
+		else if(Shift_Count%16 < 16 && Display_Word_Count < BYTES_PER_WORD)
 		{
-			Shift_Bit = Word[Display_Word_Count][16+i]&temp;
+			Shift_Bit = Word[Display_Word_Count][16+i] & temp;
 		}
 		else
 		{
@@ -139,6 +135,7 @@ void Calc_Shift()
 		}
 
 	}
+
 	temp = (temp>>1)&0x7f;
 	if(temp == 0x00)
 	{
